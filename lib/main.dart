@@ -40,14 +40,13 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (context) => CountrySelectionBottomSheet(
         selectedCountry: _selectedCountry,
         onCountrySelected: (country) {
-          print('Country selected in callback: ${country.name}'); // 调试用
+          // Callback for country selection
         },
       ),
     );
 
     // 如果用户选择了国家，更新状态
     if (result != null) {
-      print('Country result: ${result.name}'); // 调试用
       setState(() {
         _selectedCountry = result;
       });

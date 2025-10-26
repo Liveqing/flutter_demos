@@ -271,7 +271,6 @@ class _CountrySelectionBottomSheetState
 
     return GestureDetector(
       onTap: () {
-        print('Country tapped: ${country.name}'); // 调试用
         widget.onCountrySelected(country);
         Navigator.of(context).pop(country);
       },
