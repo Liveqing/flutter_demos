@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'account/pages/manage_page.dart';
+import 'transaction/pages/transactions_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -69,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      'Account Management',
+                      'Flutter Demos',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -78,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'View and manage your account details',
+                      'Choose a demo to explore',
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                       textAlign: TextAlign.center,
                     ),
@@ -103,7 +104,37 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         child: const Text(
-                          'Open Account Page',
+                          'Account Management',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const TransactionsPage(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: const Color(0xFFFF6B35),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: const BorderSide(color: Color(0xFFFF6B35)),
+                          ),
+                        ),
+                        child: const Text(
+                          'Transactions',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
