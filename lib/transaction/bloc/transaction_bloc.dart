@@ -30,7 +30,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         TransactionLoaded(
           transactions: transactions,
           accountOptions: accountOptions,
-          selectedAccountId: accountOptions.isNotEmpty ? accountOptions.first.id : null,
+          selectedAccountId: accountOptions.isNotEmpty
+              ? accountOptions.first.id
+              : null,
           hasMore: hasMore,
         ),
       );
@@ -108,11 +110,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         ),
       );
     } catch (e) {
-      emit(
-        currentState.copyWith(
-          isLoadingMore: false,
-        ),
-      );
+      emit(currentState.copyWith(isLoadingMore: false));
     }
   }
 
@@ -223,7 +221,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         ),
       );
     } catch (e) {
-      emit(TransactionError('Failed to load account transactions: ${e.toString()}'));
+      emit(
+        TransactionError(
+          'Failed to load account transactions: ${e.toString()}',
+        ),
+      );
     }
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../models/filter_options.dart';
+import '../../widgets/custom_keyboard/custom_keyboard_export.dart';
 
 class FilterBottomSheet extends StatefulWidget {
   final FilterOptions initialFilters;
@@ -49,21 +49,27 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           // Header
           _buildHeader(),
           
-          // Content
+          // Content - 使用ValueListenableBuilder监听键盘高度变化
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildTransactionCategories(),
-                  const SizedBox(height: 24),
-                  _buildTimeSection(),
-                  const SizedBox(height: 24),
-                  _buildAmountSection(),
-                  const SizedBox(height: 32),
-                ],
-              ),
+            child: ValueListenableBuilder<double>(
+              valueListenable: KeyboardManager.keyboardHeightNotifier,
+              builder: (context, keyboardHeight, child) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildTransactionCategories(),
+                      const SizedBox(height: 24),
+                      _buildTimeSection(),
+                      const SizedBox(height: 24),
+                      _buildAmountSection(),
+                      // 动态调整底部空间：键盘弹出时增加高度，隐藏时恢复
+                      SizedBox(height: keyboardHeight > 0 ? keyboardHeight + 80 : 32),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
           
@@ -397,10 +403,16 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  TextField(
+                  CustomKeyboardTextField(
                     controller: _minAmountController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    hintText: '12,000',
+                    showDecimal: false,
+                    onChanged: (value) {
+                      final amount = double.tryParse(value);
+                      setState(() {
+                        _currentFilters = _currentFilters.copyWith(minAmount: amount);
+                      });
+                    },
                     decoration: InputDecoration(
                       hintText: '12,000',
                       hintStyle: const TextStyle(color: Colors.grey),
@@ -421,12 +433,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         vertical: 12,
                       ),
                     ),
-                    onChanged: (value) {
-                      final amount = double.tryParse(value);
-                      setState(() {
-                        _currentFilters = _currentFilters.copyWith(minAmount: amount);
-                      });
-                    },
                   ),
                 ],
               ),
@@ -444,10 +450,16 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  TextField(
+                  CustomKeyboardTextField(
                     controller: _maxAmountController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    hintText: '12,000,000',
+                    showDecimal: false,
+                    onChanged: (value) {
+                      final amount = double.tryParse(value);
+                      setState(() {
+                        _currentFilters = _currentFilters.copyWith(maxAmount: amount);
+                      });
+                    },
                     decoration: InputDecoration(
                       hintText: '12,000,000',
                       hintStyle: const TextStyle(color: Colors.grey),
@@ -468,12 +480,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         vertical: 12,
                       ),
                     ),
-                    onChanged: (value) {
-                      final amount = double.tryParse(value);
-                      setState(() {
-                        _currentFilters = _currentFilters.copyWith(maxAmount: amount);
-                      });
-                    },
                   ),
                 ],
               ),

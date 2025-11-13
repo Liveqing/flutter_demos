@@ -102,9 +102,7 @@ class _TransactionsViewState extends State<TransactionsView> {
                 const SizedBox(height: 16),
 
                 // Transaction List
-                Expanded(
-                  child: _buildTransactionList(state),
-                ),
+                Expanded(child: _buildTransactionList(state)),
               ],
             );
           }
@@ -136,7 +134,9 @@ class _TransactionsViewState extends State<TransactionsView> {
               child: TextField(
                 controller: _searchController,
                 onChanged: (value) {
-                  context.read<TransactionBloc>().add(SearchTransactions(value));
+                  context.read<TransactionBloc>().add(
+                    SearchTransactions(value),
+                  );
                 },
                 decoration: InputDecoration(
                   hintText: 'Search',
@@ -161,11 +161,7 @@ class _TransactionsViewState extends State<TransactionsView> {
                 color: const Color(0xFFFF6B35),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(
-                Icons.tune,
-                color: Colors.white,
-                size: 24,
-              ),
+              child: const Icon(Icons.tune, color: Colors.white, size: 24),
             ),
           ),
         ],
@@ -194,9 +190,21 @@ class _TransactionsViewState extends State<TransactionsView> {
               ),
               child: Row(
                 children: [
-                  _buildFilterTab('All', TransactionType.all, state.currentFilter),
-                  _buildFilterTab('Credited', TransactionType.credited, state.currentFilter),
-                  _buildFilterTab('Debited', TransactionType.debited, state.currentFilter),
+                  _buildFilterTab(
+                    'All',
+                    TransactionType.all,
+                    state.currentFilter,
+                  ),
+                  _buildFilterTab(
+                    'Credited',
+                    TransactionType.credited,
+                    state.currentFilter,
+                  ),
+                  _buildFilterTab(
+                    'Debited',
+                    TransactionType.debited,
+                    state.currentFilter,
+                  ),
                 ],
               ),
             ),
@@ -215,7 +223,11 @@ class _TransactionsViewState extends State<TransactionsView> {
     );
   }
 
-  Widget _buildFilterTab(String title, TransactionType type, TransactionType currentFilter) {
+  Widget _buildFilterTab(
+    String title,
+    TransactionType type,
+    TransactionType currentFilter,
+  ) {
     final isSelected = type == currentFilter;
     return Expanded(
       child: GestureDetector(
@@ -247,10 +259,7 @@ class _TransactionsViewState extends State<TransactionsView> {
       return const Center(
         child: Text(
           'No transactions found',
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 16,
-          ),
+          style: TextStyle(color: Colors.grey, fontSize: 16),
         ),
       );
     }
@@ -288,7 +297,11 @@ class _TransactionsViewState extends State<TransactionsView> {
     return count;
   }
 
-  Widget _buildListItem(BuildContext context, TransactionLoaded state, int index) {
+  Widget _buildListItem(
+    BuildContext context,
+    TransactionLoaded state,
+    int index,
+  ) {
     final groupedTransactions = _groupTransactionsByDate(state.transactions);
     int currentIndex = 0;
 
@@ -338,7 +351,9 @@ class _TransactionsViewState extends State<TransactionsView> {
     );
   }
 
-  Map<String, List<Transaction>> _groupTransactionsByDate(List<Transaction> transactions) {
+  Map<String, List<Transaction>> _groupTransactionsByDate(
+    List<Transaction> transactions,
+  ) {
     final Map<String, List<Transaction>> grouped = {};
 
     for (final transaction in transactions) {
@@ -353,7 +368,7 @@ class _TransactionsViewState extends State<TransactionsView> {
           dateKey = transaction.formattedDate;
         }
       }
-      
+
       if (!grouped.containsKey(dateKey)) {
         grouped[dateKey] = [];
       }
@@ -374,7 +389,9 @@ class _TransactionsViewState extends State<TransactionsView> {
           // Handle filter application
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Filters applied: ${filters.hasFilters ? 'Yes' : 'None'}'),
+              content: Text(
+                'Filters applied: ${filters.hasFilters ? 'Yes' : 'None'}',
+              ),
               duration: const Duration(seconds: 2),
             ),
           );
