@@ -6,7 +6,7 @@ enum TimeFilter { oneWeek, oneMonth, threeMonths, sixMonths, custom }
 
 class FilterOptions extends Equatable {
   final TransactionCategory? category;
-  final TimeFilter timeFilter;
+  final TimeFilter? timeFilter;
   final DateTime? startDate;
   final DateTime? endDate;
   final double? minAmount;
@@ -14,7 +14,7 @@ class FilterOptions extends Equatable {
 
   const FilterOptions({
     this.category,
-    this.timeFilter = TimeFilter.oneWeek,
+    this.timeFilter,
     this.startDate,
     this.endDate,
     this.minAmount,
@@ -38,10 +38,11 @@ class FilterOptions extends Equatable {
     DateTime? endDate,
     double? minAmount,
     double? maxAmount,
+    bool clearTimeFilter = false,
   }) {
     return FilterOptions(
       category: category ?? this.category,
-      timeFilter: timeFilter ?? this.timeFilter,
+      timeFilter: clearTimeFilter ? null : (timeFilter ?? this.timeFilter),
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       minAmount: minAmount ?? this.minAmount,
@@ -51,7 +52,7 @@ class FilterOptions extends Equatable {
 
   bool get hasFilters {
     return category != null ||
-        timeFilter != TimeFilter.oneWeek ||
+        timeFilter != null ||
         startDate != null ||
         endDate != null ||
         minAmount != null ||

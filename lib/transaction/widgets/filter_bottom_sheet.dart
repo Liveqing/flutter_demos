@@ -253,7 +253,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       child: GestureDetector(
         onTap: () {
           setState(() {
-            _currentFilters = _currentFilters.copyWith(timeFilter: filter);
+            // 如果点击的是已选中的按钮，则取消选中；否则选中该按钮
+            if (isSelected) {
+              _currentFilters = _currentFilters.copyWith(clearTimeFilter: true);
+            } else {
+              _currentFilters = _currentFilters.copyWith(timeFilter: filter);
+            }
           });
         },
         child: Container(
