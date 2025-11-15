@@ -85,159 +85,173 @@ class _AccountSelectorState extends State<AccountSelector> {
     final RenderBox renderBox = _buttonKey.currentContext!.findRenderObject() as RenderBox;
     final size = renderBox.size;
     final offset = renderBox.localToGlobal(Offset.zero);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    
+    // Calculate dropdown position
+    final dropdownTop = offset.dy + size.height + 4;
+    final dropdownWidth = screenWidth;
+    final leftPosition = .0; // Left margin
 
     _overlayEntry = OverlayEntry(
       builder: (context) => Stack(
         children: [
-          // Invisible background to catch taps outside
-          Positioned.fill(
+          // Semi-transparent mask only below the dropdown
+          Positioned(
+            left: 0,
+            right: 0,
+            top: dropdownTop,
+            bottom: 0,
             child: GestureDetector(
               onTap: _closeDropdown,
               child: Container(
-                color: Colors.transparent,
+                color: Colors.black.withOpacity(0.3),
               ),
             ),
           ),
-          // Dropdown menu
+          // Animated dropdown menu
           Positioned(
-            left: offset.dx,
-            top: offset.dy + size.height + 8,
-            child: Material(
-              elevation: 8,
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                width: size.width + 100, // Make it wider than the button
-                constraints: const BoxConstraints(
-                  maxHeight: 300,
-                  minWidth: 200,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Header
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: Color(0xFFE0E0E0), width: 1),
+            left: leftPosition,
+            top: dropdownTop,
+            child: TweenAnimationBuilder<double>(
+              duration: const Duration(milliseconds: 250),
+              tween: Tween<double>(begin: 0.0, end: 1.0),
+              curve: Curves.easeOutCubic,
+              builder: (context, value, child) {
+                return Transform.translate(
+                  offset: Offset(0, -20 * (1 - value)), // Slide down animation
+                  child: Opacity(
+                    opacity: value,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Container(
+                        width: dropdownWidth,
+                        height: 400,
+                        constraints: BoxConstraints(
+                          maxHeight: screenHeight - dropdownTop - 100,
                         ),
-                      ),
-                      child: const Row(
-                        children: [
-                          Text(
-                            'Select Account',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
+                              spreadRadius: 0,
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    
-                    // Account List
-                    Flexible(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        itemCount: widget.accounts.length,
-                        itemBuilder: (context, index) {
-                          final account = widget.accounts[index];
-                          final isSelected = widget.selectedAccount?.id == account.id;
-                          
-                          return InkWell(
-                            onTap: () {
-                              widget.onAccountSelected(account.id);
-                              _closeDropdown();
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: isSelected 
-                                    ? const Color(0xFFFF6B35).withOpacity(0.1)
-                                    : Colors.transparent,
-                              ),
-                              child: Row(
-                                children: [
-                                  // Radio button
-                                  Container(
-                                    width: 16,
-                                    height: 16,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: isSelected 
-                                            ? const Color(0xFFFF6B35)
-                                            : Colors.grey[400]!,
-                                        width: 2,
-                                      ),
-                                      color: isSelected 
-                                          ? const Color(0xFFFF6B35)
-                                          : Colors.transparent,
-                                    ),
-                                    child: isSelected
-                                        ? const Icon(
-                                            Icons.circle,
-                                            size: 6,
-                                            color: Colors.white,
-                                          )
-                                        : null,
-                                  ),
-                                  const SizedBox(width: 12),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Account List
+                            Flexible(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                itemCount: widget.accounts.length,
+                                itemBuilder: (context, index) {
+                                  final account = widget.accounts[index];
+                                  final isSelected = widget.selectedAccount?.id == account.id;
                                   
-                                  // Account Info
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          account.name,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: isSelected 
-                                                ? const Color(0xFFFF6B35)
-                                                : Colors.black87,
+                                  return InkWell(
+                                    onTap: () {
+                                      widget.onAccountSelected(account.id);
+                                      _closeDropdown();
+                                    },
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 2,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 16,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isSelected 
+                                            ? const Color(0xFFFF6B35).withOpacity(0.1)
+                                            : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: isSelected 
+                                            ? Border.all(
+                                                color: const Color(0xFFFF6B35),
+                                                width: 1,
+                                              )
+                                            : null,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          // Radio button
+                                          Container(
+                                            width: 20,
+                                            height: 20,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: isSelected 
+                                                    ? const Color(0xFFFF6B35)
+                                                    : Colors.grey[400]!,
+                                                width: 2,
+                                              ),
+                                              color: isSelected 
+                                                  ? const Color(0xFFFF6B35)
+                                                  : Colors.transparent,
+                                            ),
+                                            child: isSelected
+                                                ? const Icon(
+                                                    Icons.check,
+                                                    size: 12,
+                                                    color: Colors.white,
+                                                  )
+                                                : null,
                                           ),
-                                        ),
-                                        if (account.accountNumber.isNotEmpty) ...[
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            account.accountNumber,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey[600],
+                                          const SizedBox(width: 16),
+                                          
+                                          // Account Info
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  account.name,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: isSelected 
+                                                        ? const Color(0xFFFF6B35)
+                                                        : Colors.black87,
+                                                  ),
+                                                ),
+                                                if (account.accountNumber.isNotEmpty) ...[
+                                                  const SizedBox(height: 4),
+                                                  Text(
+                                                    account.accountNumber,
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.grey[600],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ],
                                             ),
                                           ),
                                         ],
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  );
+                                },
                               ),
                             ),
-                          );
-                        },
+                          ],
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ],
