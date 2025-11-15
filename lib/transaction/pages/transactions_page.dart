@@ -10,6 +10,7 @@ import '../models/filter_options.dart';
 import '../widgets/transaction_item.dart';
 import '../widgets/account_selector.dart';
 import '../widgets/filter_bottom_sheet.dart';
+import 'transaction_details_page.dart';
 
 class TransactionsPage extends StatelessWidget {
   const TransactionsPage({super.key});
@@ -318,7 +319,14 @@ class _TransactionsViewState extends State<TransactionsView> {
           return TransactionItem(
             transaction: group.value[i],
             onTap: () {
-              // Handle transaction tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TransactionDetailsPage(
+                    transaction: group.value[i],
+                  ),
+                ),
+              );
             },
           );
         }

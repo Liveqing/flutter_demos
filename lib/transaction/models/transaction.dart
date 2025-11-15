@@ -4,6 +4,13 @@ enum TransactionType { all, credited, debited }
 
 enum TransactionStatus { completed, failed, pending }
 
+enum TransactionProgressStatus { 
+  initiated, 
+  processed, 
+  inTransit, 
+  credited 
+}
+
 class Transaction extends Equatable {
   final String id;
   final String title;
@@ -13,6 +20,7 @@ class Transaction extends Equatable {
   final DateTime date;
   final TransactionType type;
   final TransactionStatus status;
+  final TransactionProgressStatus progressStatus;
   final String? avatarText;
   final String? avatarEmoji;
 
@@ -25,6 +33,7 @@ class Transaction extends Equatable {
     required this.date,
     required this.type,
     this.status = TransactionStatus.completed,
+    this.progressStatus = TransactionProgressStatus.credited,
     this.avatarText,
     this.avatarEmoji,
   });
@@ -39,6 +48,7 @@ class Transaction extends Equatable {
         date,
         type,
         status,
+        progressStatus,
         avatarText,
         avatarEmoji,
       ];

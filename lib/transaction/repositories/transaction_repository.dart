@@ -34,6 +34,7 @@ class TransactionRepository {
       amount: 172342.00,
       date: DateTime.now().subtract(const Duration(hours: 2)),
       type: TransactionType.credited,
+      progressStatus: TransactionProgressStatus.credited,
       avatarEmoji: '👩',
     ),
     Transaction(
@@ -43,6 +44,7 @@ class TransactionRepository {
       amount: 83.00,
       date: DateTime.now().subtract(const Duration(hours: 4)),
       type: TransactionType.debited,
+      progressStatus: TransactionProgressStatus.inTransit,
       avatarEmoji: '🚗',
     ),
     Transaction(
@@ -53,6 +55,7 @@ class TransactionRepository {
       date: DateTime.now().subtract(const Duration(hours: 6)),
       type: TransactionType.debited,
       status: TransactionStatus.failed,
+      progressStatus: TransactionProgressStatus.initiated,
       avatarEmoji: '👨',
     ),
 
@@ -64,6 +67,7 @@ class TransactionRepository {
       amount: 83.00,
       date: DateTime(2024, 9, 21, 20, 24),
       type: TransactionType.debited,
+      progressStatus: TransactionProgressStatus.processed,
       avatarEmoji: '🚗',
     ),
     Transaction(
@@ -73,6 +77,7 @@ class TransactionRepository {
       amount: 83.00,
       date: DateTime(2024, 9, 21, 20, 24),
       type: TransactionType.debited,
+      progressStatus: TransactionProgressStatus.credited,
       avatarEmoji: '🚗',
     ),
     Transaction(
@@ -82,6 +87,7 @@ class TransactionRepository {
       amount: 83.00,
       date: DateTime(2024, 9, 21, 20, 24),
       type: TransactionType.debited,
+      progressStatus: TransactionProgressStatus.inTransit,
       avatarEmoji: '👨',
     ),
     Transaction(
@@ -91,6 +97,7 @@ class TransactionRepository {
       amount: 83.00,
       date: DateTime(2024, 9, 21, 20, 24),
       type: TransactionType.debited,
+      progressStatus: TransactionProgressStatus.processed,
       avatarEmoji: '🚗',
     ),
     Transaction(
@@ -100,6 +107,7 @@ class TransactionRepository {
       amount: 83.00,
       date: DateTime(2024, 9, 21, 20, 24),
       type: TransactionType.debited,
+      progressStatus: TransactionProgressStatus.initiated,
       avatarEmoji: '🚗',
     ),
 
@@ -111,6 +119,7 @@ class TransactionRepository {
       amount: 49.99,
       date: DateTime(2024, 9, 20, 15, 30),
       type: TransactionType.debited,
+      progressStatus: TransactionProgressStatus.credited,
       avatarEmoji: '📺',
     ),
     Transaction(
@@ -120,6 +129,7 @@ class TransactionRepository {
       amount: 15000.00,
       date: DateTime(2024, 9, 20, 9, 0),
       type: TransactionType.credited,
+      progressStatus: TransactionProgressStatus.credited,
       avatarEmoji: '💰',
     ),
   ];
