@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_refresh/easy_refresh.dart';
@@ -35,12 +36,34 @@ class TransactionsView extends StatefulWidget {
 class _TransactionsViewState extends State<TransactionsView> {
   final TextEditingController _searchController = TextEditingController();
   final EasyRefreshController _refreshController = EasyRefreshController();
+  Timer? _searchDebounceTimer;
+  
+  // 搜索防抖延时（毫秒）
+  static const int _searchDebounceDelay = 500;
 
   @override
   void dispose() {
     _searchController.dispose();
     _refreshController.dispose();
+    _searchDebounceTimer?.cancel();
     super.dispose();
+  }
+
+  /// 搜索防抖处理
+  void _onSearchChanged(String searchText) {
+    // 取消之前的定时器
+    _searchDebounceTimer?.cancel();
+    
+    // 创建新的定时器
+    _searchDebounceTimer = Timer(
+      const Duration(milliseconds: _searchDebounceDelay),
+      () {
+        // 延时后执行搜索
+        context.read<TransactionBloc>().add(
+          SearchTransactions(searchText),
+        );
+      },
+    );
   }
 
   @override
@@ -135,9 +158,7 @@ class _TransactionsViewState extends State<TransactionsView> {
               child: TextField(
                 controller: _searchController,
                 onChanged: (value) {
-                  context.read<TransactionBloc>().add(
-                    SearchTransactions(value),
-                  );
+                  _onSearchChanged(value);
                 },
                 decoration: InputDecoration(
                   hintText: 'Search',

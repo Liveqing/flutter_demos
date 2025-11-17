@@ -96,7 +96,20 @@ class _AccountSelectorState extends State<AccountSelector> {
     _overlayEntry = OverlayEntry(
       builder: (context) => Stack(
         children: [
-          // Semi-transparent mask only below the dropdown
+          // Upper transparent area (above dropdown)
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: screenHeight - dropdownTop,
+            child: GestureDetector(
+              onTap: _closeDropdown,
+              child: Container(
+                color: Colors.transparent,
+              ),
+            ),
+          ),
+          // Lower semi-transparent mask (below dropdown) - also clickable
           Positioned(
             left: 0,
             right: 0,
@@ -124,34 +137,38 @@ class _AccountSelectorState extends State<AccountSelector> {
                     opacity: value,
                     child: Material(
                       color: Colors.transparent,
-                      child: Container(
-                        width: dropdownWidth,
-                        height: 400,
-                        constraints: BoxConstraints(
-                          maxHeight: screenHeight - dropdownTop - 100,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
-                              blurRadius: 20,
-                              offset: const Offset(0, 8),
-                              spreadRadius: 0,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Account List
-                            Flexible(
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                itemCount: widget.accounts.length,
-                                itemBuilder: (context, index) {
+                      child: GestureDetector(
+                        onTap: () {
+                          // 阻止事件冒泡，防止点击弹窗内容时关闭弹窗
+                        },
+                        child: Container(
+                          width: dropdownWidth,
+                          height: 400,
+                          constraints: BoxConstraints(
+                            maxHeight: screenHeight - dropdownTop - 100,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.15),
+                                blurRadius: 20,
+                                offset: const Offset(0, 8),
+                                spreadRadius: 0,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Account List
+                              Flexible(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  itemCount: widget.accounts.length,
+                                  itemBuilder: (context, index) {
                                   final account = widget.accounts[index];
                                   final isSelected = widget.selectedAccount?.id == account.id;
                                   
@@ -244,8 +261,9 @@ class _AccountSelectorState extends State<AccountSelector> {
                                   );
                                 },
                               ),
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
